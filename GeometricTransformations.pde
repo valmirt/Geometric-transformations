@@ -66,28 +66,28 @@ void keyPressed(){
     if (key == 'X' || key == 'x'){
       background(0);
       showMenu();
-      if(control) polygon.rotationXY();
+      if(control) polygon.rotationXY(15);
     }
     if (key == 'Z' || key == 'z'){
       background(0);
       showMenu();
-      if(control) polygon.rotationZX();
+      if(control) polygon.rotationZX(15);
     }
     if (key == 'Y' || key == 'y'){
       background(0);
       showMenu();
-      if(control) polygon.rotationYZ();
+      if(control) polygon.rotationYZ(15);
     }
     if (key == 'S' || key == 's'){
       background(0);
       showMenu();
-      if(control) polygon.customScale();
+      if(control) polygon.customScale(0.9, 0.9, 0.9);
     }
     if (key == '+'){
-      if(control) if (polygon.variation < 3) polygon.variation += 1;
+      if(control) if (polygon.variation < 3) polygon.variation += 0.5;
     }
     if (key == '-'){
-      if(control) if (polygon.variation > 1) polygon.variation -= 1;
+      if(control) if (polygon.variation > 0.6) polygon.variation -= 0.5;
     }
 }
 

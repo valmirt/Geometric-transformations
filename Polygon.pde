@@ -14,7 +14,7 @@ class Polygon {
   private int[] colorInside;
   private boolean fill;
   private int type;
-  int variation = 1;
+  double variation = 1;
   
   Polygon(int object){
     this.type = object;
@@ -237,26 +237,78 @@ class Polygon {
     drawObject();
   }
   
-  void customScale(){
-    //Escala
+  void customScale(double x, double y, double z){
+    x *= variation;
+    y *= variation;
+    z *= variation;
+    
+    double[][] m = {
+      {x, 0, 0, 0},
+      {0, y, 0, 0},
+      {0, 0, z, 0},
+      {0, 0, 0, 1},
+    };
+    int size = 0;
+    
+    if(type == 1) size = 8;
+    else size = 5;
+    
+    points = multM(points, m, size);
+    
     cavaleiraProjection();
     drawObject();
   }
   
-  void rotationXY(){
-    //Rotacao XY
+  void rotationXY(double angle){
+    float rad = (float) angle*3.141592/180;
+    double[][] m = {
+      {cos(rad),  sin(rad), 0, 0},
+      {-sin(rad), cos(rad), 0, 0},
+      {0,         0,        1, 0},
+      {0,         0,        0, 1},
+    };
+    int size = 0;
+    
+    if(type == 1) size = 8;
+    else size = 5;
+    
+    points = multM(points, m, size);
     cavaleiraProjection();
     drawObject();
   }
   
-  void rotationZX(){
-    //Rotacao ZX
+  void rotationZX(double angle){
+    float rad = (float) angle*3.141592/180;
+    double[][] m = {
+      {cos(rad), 0, -sin(rad), 0},
+      {0,        1,         0, 0},
+      {sin(rad), 0,  cos(rad), 0},
+      {0,        0,         0, 1},
+    };
+    int size = 0;
+    
+    if(type == 1) size = 8;
+    else size = 5;
+    
+    points = multM(points, m, size);
     cavaleiraProjection();
     drawObject();
   }
   
-  void rotationYZ(){
-    //Rotacao YZ
+  void rotationYZ(double angle){
+    float rad = (float) angle*3.141592/180;
+    double[][] m = {
+      {1,         0,        0, 0},
+      {0,  cos(rad), sin(rad), 0},
+      {0, -sin(rad), cos(rad), 0},
+      {0,         0,        0, 1},
+    };
+    int size = 0;
+    
+    if(type == 1) size = 8;
+    else size = 5;
+    
+    points = multM(points, m, size);
     cavaleiraProjection();
     drawObject();
   }
