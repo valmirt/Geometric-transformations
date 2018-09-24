@@ -52,49 +52,49 @@ class Polygon {
     //p1
     points[0][0] = -1;
     points[0][1] = 1;
-    points[0][2] = 0.5;
+    points[0][2] = 1;
     points[0][3] = 1;
     
     //p2
     points[1][0] = 1;
     points[1][1] = 1;
-    points[1][2] = 0.5;
+    points[1][2] = 1;
     points[1][3] = 1;
     
     //p3
     points[2][0] = 1;
     points[2][1] = -1;
-    points[2][2] = 0.5;
+    points[2][2] = 1;
     points[2][3] = 1;
     
     //p4
     points[3][0] = -1;
     points[3][1] = -1;
-    points[3][2] = 0.5;
+    points[3][2] = 1;
     points[3][3] = 1;
     
     //p5
     points[4][0] = -1;
     points[4][1] = 1;
-    points[4][2] = -0.5;
+    points[4][2] = -1;
     points[4][3] = 1;
     
     //p6
     points[5][0] = 1;
     points[5][1] = 1;
-    points[5][2] = -0.5;
+    points[5][2] = -1;
     points[5][3] = 1;
     
     //p6
     points[6][0] = 1;
     points[6][1] = -1;
-    points[6][2] = -0.5;
+    points[6][2] = -1;
     points[6][3] = 1;
     
     //p7
     points[7][0] = -1;
     points[7][1] = -1;
-    points[7][2] = -0.5;
+    points[7][2] = -1;
     points[7][3] = 1;
     
     int[] colorBorder = {
