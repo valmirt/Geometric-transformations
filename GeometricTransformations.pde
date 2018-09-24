@@ -2,8 +2,8 @@
   * Computação Gráfica 
   *
   * Valmir Torres de Jesus Junior
-  * Atividade individual 3
-  * 21/09/2018
+  * Atividade individual 4
+  * 24/09/2018
 **/
 
 int SCREEN_WIDTH = 800;
