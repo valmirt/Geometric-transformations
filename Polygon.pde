@@ -2,8 +2,8 @@
   * Computação Gráfica 
   *
   * Valmir Torres de Jesus Junior
-  * Atividade individual 4
-  * 24/09/2018
+  * Atividade individual 5
+  * 16/10/2018
 **/
 
 class Polygon {
@@ -14,6 +14,7 @@ class Polygon {
   private int[] colorInside;
   private boolean fill;
   private int type;
+  int projection = 1;
   double variation = 1;
   
   Polygon(int object){
@@ -112,8 +113,7 @@ class Polygon {
     this.colorBorder = colorBorder;
     this.colorInside = colorInside;
     this.fill = false;
-    
-    cavaleiraProjection();
+    chooseProjection();
   }
   
   private void createPyramid() {
@@ -165,60 +165,15 @@ class Polygon {
     this.colorInside = colorInside;
     this.fill = false;
     
-    cavaleiraProjection();
-  }
+    chooseProjection();
+  } //<>//
   
-  private void cavaleiraProjection(){
-    double[][] pointsScreen;
-    int h, w, p;
-    double dx, dy, cos, m;
-    
-    h = yMax - yMin;
-    w = xMax - xMin;
-    p = zMax - zMin;
-    
-    cos = (sqrt(2))/2;
-    if((WIDTH/w) <= (HEIGHT/h)) m = (WIDTH/w);
-    else m = (HEIGHT/h);
-    
-    dx = (WIDTH - w * m) / 2;
-    dy = (HEIGHT - h * m) / 2;
-     //<>//
-    int size = 0;
-    if (type == 1) {
-      pointsScreen = new double[8][4];
-      size = 8;
+  void move(double x, double y, double z, boolean var){
+    if(var){
+      x *= variation;
+      y *= variation;
+      z *= variation;
     }
-    else {
-      pointsScreen = new double[5][4];
-      size = 5;
-    }
-    for(int i = 0; i < size; i++){
-      //x', y', z'
-      pointsScreen[i][0] = points[i][0] - xMin;
-      pointsScreen[i][1] = yMax - points[i][1];
-      pointsScreen[i][2] = zMax - points[i][2];
-      
-      //x'', y'', z''
-      pointsScreen[i][0] = pointsScreen[i][0] * m + dx;
-      pointsScreen[i][1] = pointsScreen[i][1] * m + dy;
-      pointsScreen[i][2] = pointsScreen[i][2] * m;
-      
-      //x''', y''', z'''
-      pointsScreen[i][0] = pointsScreen[i][0] + pointsScreen[i][2] * cos;
-      pointsScreen[i][1] = pointsScreen[i][1] - pointsScreen[i][2] * cos;
-      pointsScreen[i][2] = 0;
-    }
-    
-    
-    this.pointsScreen = pointsScreen;
-    drawObject();
-  }
-  
-  void move(double x, double y, double z){
-    x *= variation;
-    y *= variation;
-    z *= variation;
     
     double[][] m = {
       {1, 0, 0, 0},
@@ -232,15 +187,14 @@ class Polygon {
     else size = 5;
     
     points = multM(points, m, size);
-    
-    cavaleiraProjection();
-    drawObject();
   }
   
-  void customScale(double x, double y, double z){
-    x *= variation;
-    y *= variation;
-    z *= variation;
+  void customScale(double x, double y, double z, boolean var){
+    if(var){
+      x *= variation;
+      y *= variation;
+      z *= variation;
+    }
     
     double[][] m = {
       {x, 0, 0, 0},
@@ -254,9 +208,6 @@ class Polygon {
     else size = 5;
     
     points = multM(points, m, size);
-    
-    cavaleiraProjection();
-    drawObject();
   }
   
   void rotationXY(double angle){
@@ -273,8 +224,6 @@ class Polygon {
     else size = 5;
     
     points = multM(points, m, size);
-    cavaleiraProjection();
-    drawObject();
   }
   
   void rotationZX(double angle){
@@ -291,8 +240,6 @@ class Polygon {
     else size = 5;
     
     points = multM(points, m, size);
-    cavaleiraProjection();
-    drawObject();
   }
   
   void rotationYZ(double angle){
@@ -309,8 +256,6 @@ class Polygon {
     else size = 5;
     
     points = multM(points, m, size);
-    cavaleiraProjection();
-    drawObject();
   }
   
   private void drawObject(){
@@ -406,6 +351,135 @@ class Polygon {
                colorBorder[0], 
                colorBorder[1], 
                colorBorder[2]);
+    }
+  }
+  
+  private void cavaleiraProjection(){
+    double[][] pointsScreen;
+    int h, w, p;
+    double dx, dy, cos, m;
+    
+    h = yMax - yMin;
+    w = xMax - xMin;
+    p = zMax - zMin;
+    
+    cos = (sqrt(2))/2;
+    if((WIDTH/w) <= (HEIGHT/h)) m = (WIDTH/w);
+    else m = (HEIGHT/h);
+    
+    dx = (WIDTH - w * m) / 2;
+    dy = (HEIGHT - h * m) / 2;
+    
+    int size = 0;
+    if (type == 1) {
+      pointsScreen = new double[8][4];
+      size = 8;
+    }
+    else {
+      pointsScreen = new double[5][4];
+      size = 5;
+    }
+    for(int i = 0; i < size; i++){
+      //x', y', z'
+      pointsScreen[i][0] = points[i][0] - xMin;
+      pointsScreen[i][1] = yMax - points[i][1];
+      pointsScreen[i][2] = zMax - points[i][2];
+      
+      //x'', y'', z''
+      pointsScreen[i][0] = pointsScreen[i][0] * m + dx;
+      pointsScreen[i][1] = pointsScreen[i][1] * m + dy;
+      pointsScreen[i][2] = pointsScreen[i][2] * m;
+      
+      //x''', y''', z'''
+      pointsScreen[i][0] = pointsScreen[i][0] + pointsScreen[i][2] * cos;
+      pointsScreen[i][1] = pointsScreen[i][1] - pointsScreen[i][2] * cos;
+      pointsScreen[i][2] = 0;
+    }
+    
+    this.pointsScreen = pointsScreen;
+    drawObject();
+  }
+  
+  private void cabinetProjection(){
+    double[][] pointsScreen;
+    int h, w, p;
+    double dx, dy, cos, m;
+    
+    h = yMax - yMin;
+    w = xMax - xMin;
+    p = zMax - zMin;
+    
+    cos = (sqrt(2)/2)/2;
+    if((WIDTH/w) <= (HEIGHT/h)) m = (WIDTH/w);
+    else m = (HEIGHT/h);
+    
+    dx = (WIDTH - w * m) / 2;
+    dy = (HEIGHT - h * m) / 2;
+    
+    int size = 0;
+    if (type == 1) {
+      pointsScreen = new double[8][4];
+      size = 8;
+    }
+    else {
+      pointsScreen = new double[5][4];
+      size = 5;
+    }
+    for(int i = 0; i < size; i++){
+      //x', y', z'
+      pointsScreen[i][0] = points[i][0] - xMin;
+      pointsScreen[i][1] = yMax - points[i][1];
+      pointsScreen[i][2] = zMax - points[i][2];
+      
+      //x'', y'', z''
+      pointsScreen[i][0] = pointsScreen[i][0] * m + dx;
+      pointsScreen[i][1] = pointsScreen[i][1] * m + dy;
+      pointsScreen[i][2] = pointsScreen[i][2] * m;
+      
+      //x''', y''', z'''
+      pointsScreen[i][0] = pointsScreen[i][0] + pointsScreen[i][2] * cos;
+      pointsScreen[i][1] = pointsScreen[i][1] - pointsScreen[i][2] * cos;
+      pointsScreen[i][2] = 0;
+    }
+    
+    this.pointsScreen = pointsScreen;
+    drawObject();
+  }
+  
+  private void isometricProjection(){
+    //Isometrico
+  }
+  
+  private void vanishingPointZProjection(){
+    cavaleiraProjection();
+    //Projecao com um ponto de fuga em z
+  }
+  
+  private void vanishingPointXZProjection(){
+    cavaleiraProjection();
+    //Projecao com dois pontos de fuga x e z
+  }
+  
+  void chooseProjection(){
+    switch (projection){
+      case 1:
+        cavaleiraProjection();
+        break;
+      case 2:
+        cabinetProjection();
+        break;
+      case 3:
+        isometricProjection();
+        break;
+      case 4:
+        vanishingPointZProjection();
+        break;
+      case 5:
+        vanishingPointXZProjection();
+        break;
+      default:
+        cavaleiraProjection();
+        break;
     }
   }
   

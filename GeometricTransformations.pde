@@ -2,8 +2,8 @@
   * Computação Gráfica 
   *
   * Valmir Torres de Jesus Junior
-  * Atividade individual 4
-  * 24/09/2018
+  * Atividade individual 5
+  * 16/10/2018
 **/
 
 int SCREEN_WIDTH = 800;
@@ -33,55 +33,88 @@ void keyPressed(){
     }
     if (key == '1'){
       background(0);
-      showMenu();
       polygon = new Polygon(1);
       control = true;
+      showMenu();
     }
     if(key == '2'){
       background(0);
-      showMenu();
       polygon = new Polygon(2);
       control = true;
+      showMenu();
     }
     if (keyCode == UP){
       background(0);
+      if(control) {
+        polygon.move(0, 1, 0, true);
+        polygon.chooseProjection();
+      }
       showMenu();
-      if(control) polygon.move(0, 1, 0);
     }
     if (keyCode == DOWN){
       background(0);
+      if(control) {
+        polygon.move(0, -1, 0, true);
+        polygon.chooseProjection();
+      }
       showMenu();
-      if(control) polygon.move(0, -1, 0);
     }
     if (keyCode == LEFT){
       background(0);
+      if(control) {
+        polygon.move(-1, 0, 0, true);
+        polygon.chooseProjection();
+      }
       showMenu();
-      if(control) polygon.move(-1, 0, 0);
     }
     if (keyCode == RIGHT){
       background(0);
+      if(control) {
+        polygon.move(1, 0, 0, true);
+        polygon.chooseProjection();
+      }
       showMenu();
-      if(control) polygon.move(1, 0, 0);
     }
     if (key == 'X' || key == 'x'){
       background(0);
+      if(control) {
+        polygon.rotationXY(15);
+        polygon.chooseProjection();
+      }
       showMenu();
-      if(control) polygon.rotationXY(15);
     }
     if (key == 'Z' || key == 'z'){
       background(0);
+      if(control) {
+        polygon.rotationZX(15);
+        polygon.chooseProjection();
+      }
       showMenu();
-      if(control) polygon.rotationZX(15);
     }
     if (key == 'Y' || key == 'y'){
       background(0);
+      if(control) {
+        polygon.rotationYZ(15);
+        polygon.chooseProjection();
+      }
       showMenu();
-      if(control) polygon.rotationYZ(15);
     }
     if (key == 'S' || key == 's'){
       background(0);
+      if(control) {
+        polygon.customScale(0.9, 0.9, 0.9, true);
+        polygon.chooseProjection();
+      }
       showMenu();
-      if(control) polygon.customScale(0.9, 0.9, 0.9);
+    }
+    if (key == 'P' || key == 'p'){
+      background(0);
+      if(control) {
+        if(polygon.projection < 5) polygon.projection += 1;
+        else polygon.projection = 1;
+        polygon.chooseProjection();
+      }
+      showMenu();
     }
     if (key == '+'){
       if(control) if (polygon.variation < 3) polygon.variation += 0.5;
@@ -102,6 +135,29 @@ void showMenu(){
   text("Z. Rotation ZX", WIDTH, 240);
   text("Y. Rotation YZ", WIDTH, 270);
   text("S. Scale", WIDTH, 300);
-  text("+. Increase (+1x)", WIDTH, 360);
-  text("-. Decrease (-1x)", WIDTH, 390);
+  text("P. Projection", WIDTH, 330);
+  text("+. Increase (+1x)", WIDTH, 390);
+  text("-. Decrease (-1x)", WIDTH, 410);
+  if(control){
+    switch(polygon.projection){
+      case 1:
+        text("Cavaleira Projection", WIDTH, 500);
+        break;
+      case 2:
+        text("Cabinet Projection", WIDTH, 500);
+        break;
+      case 3:
+        text("Isometric Projection", WIDTH, 500);
+        break;
+      case 4:
+        text("Point Z Projection", WIDTH, 500);
+        break;
+      case 5:
+        text("Point X, Z Projection", WIDTH, 500);
+        break;
+      default:
+        text("Cavaleira Projection", WIDTH, 500);
+        break;
+    }
+  }
 }
