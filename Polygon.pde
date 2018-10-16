@@ -258,102 +258,6 @@ class Polygon {
     points = multM(points, m, size);
   }
   
-  private void drawObject(){
-    int size = 0;
-    if(type == 1) {
-      this.lines = new double[12][6];
-      size = 12;
-      int i = 0;
-      int j = 4;
-      int k = 8;
-      for(int s = 0; s < 4; s++){
-        //recuperando xi, yi e zi 
-        lines[i][0] = pointsScreen[s][0];
-        lines[i][1] = pointsScreen[s][1];
-        lines[i][2] = pointsScreen[s][2];
-        
-        lines[j][0] = pointsScreen[s][0];
-        lines[j][1] = pointsScreen[s][1];
-        lines[j][2] = pointsScreen[s][2];
-        
-        lines[k][0] = pointsScreen[s+4][0];
-        lines[k][1] = pointsScreen[s+4][1];
-        lines[k][2] = pointsScreen[s+4][2];
-        
-        //recuperando xf, yf e zf
-        if (s == 3){
-          lines[i][3] = pointsScreen[0][0];
-          lines[i][4] = pointsScreen[0][1];
-          lines[i][5] = pointsScreen[0][2];
-          
-          lines[j][3] = pointsScreen[s+4][0];
-          lines[j][4] = pointsScreen[s+4][1];
-          lines[j][5] = pointsScreen[s+4][2];
-          
-          lines[k][3] = pointsScreen[4][0];
-          lines[k][4] = pointsScreen[4][1];
-          lines[k][5] = pointsScreen[4][2];
-        } else {
-          lines[i][3] = pointsScreen[s+1][0];
-          lines[i][4] = pointsScreen[s+1][1];
-          lines[i][5] = pointsScreen[s+1][2];
-          
-          lines[j][3] = pointsScreen[s+4][0];
-          lines[j][4] = pointsScreen[s+4][1];
-          lines[j][5] = pointsScreen[s+4][2];
-          
-          lines[k][3] = pointsScreen[s+5][0];
-          lines[k][4] = pointsScreen[s+5][1];
-          lines[k][5] = pointsScreen[s+5][2];
-        }
-        i++;
-        j++;
-        k++;
-      }
-    } else {
-      size = 8;
-      this.lines = new double[8][6];
-      for(int s = 0; s < 4; s++){
-        //recuperando xi, yi e zi 
-        lines[s][0] = pointsScreen[s+1][0];
-        lines[s][1] = pointsScreen[s+1][1];
-        lines[s][2] = pointsScreen[s+1][2];
-        
-        //recuperando xf, yf e zf
-        if (s == 3){
-          lines[s][3] = pointsScreen[1][0];
-          lines[s][4] = pointsScreen[1][1];
-          lines[s][5] = pointsScreen[1][2];
-        } else {
-          lines[s][3] = pointsScreen[s+2][0];
-          lines[s][4] = pointsScreen[s+2][1];
-          lines[s][5] = pointsScreen[s+2][2];
-        }
-      }
-      
-      for (int i = 4; i < 8; i++) {
-        //recuperando xi, yi e zi 
-        lines[i][0] = pointsScreen[0][0];
-        lines[i][1] = pointsScreen[0][1];
-        lines[i][2] = pointsScreen[0][2];
-        
-        //recuperando xf, yf e zf
-        lines[i][3] = pointsScreen[i-3][0];
-        lines[i][4] = pointsScreen[i-3][1];
-        lines[i][5] = pointsScreen[i-3][2];
-      }
-    }
-    for (int i = 0; i < size; i++) {
-      linhaDDA((int)lines[i][0], 
-               (int)lines[i][1], 
-               (int)lines[i][3], 
-               (int)lines[i][4], 
-               colorBorder[0], 
-               colorBorder[1], 
-               colorBorder[2]);
-    }
-  }
-  
   private void cavaleiraProjection(){
     double[][] pointsScreen;
     int h, w, p;
@@ -447,17 +351,65 @@ class Polygon {
   }
   
   private void isometricProjection(){
-    //Isometrico
+    double[][] pointsScreen;
+    int h, w, p;
+    double dx, dy, cos, m;
+    
+    h = yMax - yMin;
+    w = xMax - xMin;
+    p = zMax - zMin;
+    
+    cos = (sqrt(2)/2);
+    if((WIDTH/w) <= (HEIGHT/h)) m = (WIDTH/w);
+    else m = (HEIGHT/h);
+    
+    dx = (WIDTH - w * m) / 2;
+    dy = (HEIGHT - h * m) / 2;
+    
+    int size = 0;
+    if (type == 1) {
+      pointsScreen = new double[8][4];
+      size = 8;
+    }
+    else {
+      pointsScreen = new double[5][4];
+      size = 5;
+    }
+    for(int i = 0; i < size; i++){
+      //x', y', z'
+      pointsScreen[i][0] = points[i][0] - xMin;
+      pointsScreen[i][1] = yMax - points[i][1];
+      pointsScreen[i][2] = 10 - points[i][2];
+      
+      //x'', y'', z''
+      pointsScreen[i][0] = pointsScreen[i][0] * m + dx;
+      pointsScreen[i][1] = pointsScreen[i][1] * m + dy;
+      pointsScreen[i][2] = pointsScreen[i][2] * m;
+      
+      //x''', y''', z'''
+      pointsScreen[i][0] = pointsScreen[i][0] + pointsScreen[i][2] * cos;
+      pointsScreen[i][1] = pointsScreen[i][1] - pointsScreen[i][2] * cos;
+      pointsScreen[i][2] = 0;
+    }
+    
+    double[][] isometric = {
+      {0.707,  0.408, 0, 0},
+      {0,      0.816, 0, 0},
+      {0.707, -0.408, 0, 0},
+      {0,      0,     0, 1},
+    };
+    
+    pointsScreen = multM(pointsScreen, isometric , size);
+    this.pointsScreen = pointsScreen;
+    drawObject();
   }
   
   private void vanishingPointZProjection(){
-    cavaleiraProjection();
-    //Projecao com um ponto de fuga em z
+    
   }
   
   private void vanishingPointXZProjection(){
-    cavaleiraProjection();
-    //Projecao com dois pontos de fuga x e z
+    
   }
   
   void chooseProjection(){
@@ -480,6 +432,102 @@ class Polygon {
       default:
         cavaleiraProjection();
         break;
+    }
+  }
+  
+  private void drawObject(){
+    int size = 0;
+    if(type == 1) {
+      this.lines = new double[12][6];
+      size = 12;
+      int i = 0;
+      int j = 4;
+      int k = 8;
+      for(int s = 0; s < 4; s++){
+        //recuperando xi, yi e zi 
+        lines[i][0] = pointsScreen[s][0];
+        lines[i][1] = pointsScreen[s][1];
+        lines[i][2] = pointsScreen[s][2];
+        
+        lines[j][0] = pointsScreen[s][0];
+        lines[j][1] = pointsScreen[s][1];
+        lines[j][2] = pointsScreen[s][2];
+        
+        lines[k][0] = pointsScreen[s+4][0];
+        lines[k][1] = pointsScreen[s+4][1];
+        lines[k][2] = pointsScreen[s+4][2];
+        
+        //recuperando xf, yf e zf
+        if (s == 3){
+          lines[i][3] = pointsScreen[0][0];
+          lines[i][4] = pointsScreen[0][1];
+          lines[i][5] = pointsScreen[0][2];
+          
+          lines[j][3] = pointsScreen[s+4][0];
+          lines[j][4] = pointsScreen[s+4][1];
+          lines[j][5] = pointsScreen[s+4][2];
+          
+          lines[k][3] = pointsScreen[4][0];
+          lines[k][4] = pointsScreen[4][1];
+          lines[k][5] = pointsScreen[4][2];
+        } else {
+          lines[i][3] = pointsScreen[s+1][0];
+          lines[i][4] = pointsScreen[s+1][1];
+          lines[i][5] = pointsScreen[s+1][2];
+          
+          lines[j][3] = pointsScreen[s+4][0];
+          lines[j][4] = pointsScreen[s+4][1];
+          lines[j][5] = pointsScreen[s+4][2];
+          
+          lines[k][3] = pointsScreen[s+5][0];
+          lines[k][4] = pointsScreen[s+5][1];
+          lines[k][5] = pointsScreen[s+5][2];
+        }
+        i++;
+        j++;
+        k++;
+      }
+    } else {
+      size = 8;
+      this.lines = new double[8][6];
+      for(int s = 0; s < 4; s++){
+        //recuperando xi, yi e zi 
+        lines[s][0] = pointsScreen[s+1][0];
+        lines[s][1] = pointsScreen[s+1][1];
+        lines[s][2] = pointsScreen[s+1][2];
+        
+        //recuperando xf, yf e zf
+        if (s == 3){
+          lines[s][3] = pointsScreen[1][0];
+          lines[s][4] = pointsScreen[1][1];
+          lines[s][5] = pointsScreen[1][2];
+        } else {
+          lines[s][3] = pointsScreen[s+2][0];
+          lines[s][4] = pointsScreen[s+2][1];
+          lines[s][5] = pointsScreen[s+2][2];
+        }
+      }
+      
+      for (int i = 4; i < 8; i++) {
+        //recuperando xi, yi e zi 
+        lines[i][0] = pointsScreen[0][0];
+        lines[i][1] = pointsScreen[0][1];
+        lines[i][2] = pointsScreen[0][2];
+        
+        //recuperando xf, yf e zf
+        lines[i][3] = pointsScreen[i-3][0];
+        lines[i][4] = pointsScreen[i-3][1];
+        lines[i][5] = pointsScreen[i-3][2];
+      }
+    }
+    for (int i = 0; i < size; i++) {
+      linhaDDA((int)lines[i][0], 
+               (int)lines[i][1], 
+               (int)lines[i][3], 
+               (int)lines[i][4], 
+               colorBorder[0], 
+               colorBorder[1], 
+               colorBorder[2]);
     }
   }
   
