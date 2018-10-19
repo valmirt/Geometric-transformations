@@ -348,7 +348,7 @@ class Polygon {
       //x', y', z'
       pointsScreen[i][0] = points[i][0] - xMin;
       pointsScreen[i][1] = yMax - points[i][1];
-      pointsScreen[i][2] = 5 - points[i][2];
+      pointsScreen[i][2] = zMax - points[i][2];
       
       //x'', y'', z''
       pointsScreen[i][0] = pointsScreen[i][0] * m + dx;
@@ -369,49 +369,7 @@ class Polygon {
   }
   
   private void perspectiveProjection(int typeP){
-    //double[][] pointsScreen;
-    //int h, w, p;
-    //double dx, dy, m, fz = 5;
     
-    //h = yMax - yMin;
-    //w = xMax - xMin;
-    //p = zMax - zMin;
-    
-    //if((WIDTH/w) <= (HEIGHT/h)) m = (WIDTH/w);
-    //else m = (HEIGHT/h);
-    
-    //dx = (WIDTH - w * m) / 2;
-    //dy = (HEIGHT - h * m) / 2;
-    
-    //int size = 0;
-    //if (type == 1) {
-    //  pointsScreen = new double[8][4];
-    //  size = 8;
-    //}
-    //else {
-    //  pointsScreen = new double[5][4];
-    //  size = 5;
-    //}
-    
-    //for(int i = 0; i < size; i++){
-    //  //x', y', z'
-    //  pointsScreen[i][0] = points[i][0] - xMin;
-    //  pointsScreen[i][1] = yMax - points[i][1];
-    //  pointsScreen[i][2] = zMax - points[i][2];
-      
-    //  //x'', y'', z''
-    //  pointsScreen[i][0] = pointsScreen[i][0] * m + dx;
-    //  pointsScreen[i][1] = pointsScreen[i][1] * m + dy;
-    //  pointsScreen[i][2] = pointsScreen[i][2] * m;
-      
-    //  //x''', y''', z'''
-    //  pointsScreen[i][0] = (fz/(pointsScreen[i][2])) * pointsScreen[i][0];
-    //  pointsScreen[i][1] = (fz/(pointsScreen[i][2])) * pointsScreen[i][1];
-    //  pointsScreen[i][2] = 0;
-    //}
-    
-    //this.pointsScreen = pointsScreen;
-    //drawObject();
   }
   
   void chooseProjection(){
