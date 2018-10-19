@@ -3,7 +3,7 @@
   *
   * Valmir Torres de Jesus Junior
   * Atividade individual 5
-  * 16/10/2018
+  * 19/10/2018
 **/
 
 int SCREEN_WIDTH = 800;
@@ -45,66 +45,42 @@ void keyPressed(){
     }
     if (keyCode == UP){
       background(0);
-      if(control) {
-        polygon.move(0, 1, 0, true);
-        polygon.chooseProjection();
-      }
+      if(control) polygon.move(0, 1, 0, true);
       showMenu();
     }
     if (keyCode == DOWN){
       background(0);
-      if(control) {
-        polygon.move(0, -1, 0, true);
-        polygon.chooseProjection();
-      }
+      if(control) polygon.move(0, -1, 0, true);
       showMenu();
     }
     if (keyCode == LEFT){
       background(0);
-      if(control) {
-        polygon.move(-1, 0, 0, true);
-        polygon.chooseProjection();
-      }
+      if(control) polygon.move(-1, 0, 0, true);
       showMenu();
     }
     if (keyCode == RIGHT){
       background(0);
-      if(control) {
-        polygon.move(1, 0, 0, true);
-        polygon.chooseProjection();
-      }
+      if(control) polygon.move(1, 0, 0, true);
       showMenu();
     }
     if (key == 'X' || key == 'x'){
       background(0);
-      if(control) {
-        polygon.rotationXY(15);
-        polygon.chooseProjection();
-      }
+      if(control) polygon.rotation(15, 1);
       showMenu();
     }
     if (key == 'Z' || key == 'z'){
       background(0);
-      if(control) {
-        polygon.rotationZX(15);
-        polygon.chooseProjection();
-      }
+      if(control) polygon.rotation(15, 2);
       showMenu();
     }
     if (key == 'Y' || key == 'y'){
       background(0);
-      if(control) {
-        polygon.rotationYZ(15);
-        polygon.chooseProjection();
-      }
+      if(control) polygon.rotation(15, 3);
       showMenu();
     }
     if (key == 'S' || key == 's'){
       background(0);
-      if(control) {
-        polygon.customScale(0.9, 0.9, 0.9, true);
-        polygon.chooseProjection();
-      }
+      if(control) polygon.customScale(0.9, 0.9, 0.9, true);
       showMenu();
     }
     if (key == 'P' || key == 'p'){

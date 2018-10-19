@@ -3,7 +3,7 @@
   *
   * Valmir Torres de Jesus Junior
   * Atividade individual 5
-  * 16/10/2018
+  * 19/10/2018
 **/
 
 class Polygon {
@@ -14,6 +14,7 @@ class Polygon {
   private int[] colorInside;
   private boolean fill;
   private int type;
+  private double xd = 0, yd = 0, zd = 0; 
   int projection = 1;
   double variation = 1;
   
@@ -175,6 +176,10 @@ class Polygon {
       z *= variation;
     }
     
+    xd += x;
+    yd += y;
+    zd += z;
+    
     double[][] m = {
       {1, 0, 0, 0},
       {0, 1, 0, 0},
@@ -187,6 +192,7 @@ class Polygon {
     else size = 5;
     
     points = multM(points, m, size);
+    chooseProjection();
   }
   
   void customScale(double x, double y, double z, boolean var){
@@ -208,66 +214,76 @@ class Polygon {
     else size = 5;
     
     points = multM(points, m, size);
+    chooseProjection();
   }
   
-  void rotationXY(double angle){
+  void rotation(double angle, int typeR){
     float rad = (float) angle*3.141592/180;
-    double[][] m = {
-      {cos(rad),  sin(rad), 0, 0},
-      {-sin(rad), cos(rad), 0, 0},
-      {0,         0,        1, 0},
-      {0,         0,        0, 1},
-    };
-    int size = 0;
     
+    int size = 0;
     if(type == 1) size = 8;
     else size = 5;
     
-    points = multM(points, m, size);
-  }
-  
-  void rotationZX(double angle){
-    float rad = (float) angle*3.141592/180;
     double[][] m = {
-      {cos(rad), 0, -sin(rad), 0},
-      {0,        1,         0, 0},
-      {sin(rad), 0,  cos(rad), 0},
-      {0,        0,         0, 1},
+      {1,     0,   0, 0},
+      {0,     1,   0, 0},
+      {0,     0,   1, 0},
+      {-xd, -yd, -zd, 1},
     };
-    int size = 0;
-    
-    if(type == 1) size = 8;
-    else size = 5;
-    
     points = multM(points, m, size);
+    
+    switch(typeR){
+      case 1: //XY
+        double[][] rxy = {
+          {cos(rad),  sin(rad), 0, 0},
+          {-sin(rad), cos(rad), 0, 0},
+          {0,         0,        1, 0},
+          {0,         0,        0, 1},
+        };
+        points = multM(points, rxy, size);
+        break;
+      case 2: //ZX
+        double[][] rzx = {
+          {cos(rad), 0, -sin(rad), 0},
+          {0,        1,         0, 0},
+          {sin(rad), 0,  cos(rad), 0},
+          {0,        0,         0, 1},
+        };
+        points = multM(points, rzx, size);
+        break;
+      case 3: //YZ
+        double[][] ryz = {
+          {1,         0,        0, 0},
+          {0,  cos(rad), sin(rad), 0},
+          {0, -sin(rad), cos(rad), 0},
+          {0,         0,        0, 1},
+        }; 
+        points = multM(points, ryz, size);
+        break;
+    }
+    
+    double[][] m2 = {
+      {1,   0,  0, 0},
+      {0,   1,  0, 0},
+      {0,   0,  1, 0},
+      {xd, yd, zd, 1},
+    };
+    points = multM(points, m2, size);
+    
+    chooseProjection();
   }
   
-  void rotationYZ(double angle){
-    float rad = (float) angle*3.141592/180;
-    double[][] m = {
-      {1,         0,        0, 0},
-      {0,  cos(rad), sin(rad), 0},
-      {0, -sin(rad), cos(rad), 0},
-      {0,         0,        0, 1},
-    };
-    int size = 0;
-    
-    if(type == 1) size = 8;
-    else size = 5;
-    
-    points = multM(points, m, size);
-  }
-  
-  private void cavaleiraProjection(){
+  private void obliqueProjection(int typeP){
     double[][] pointsScreen;
-    int h, w, p;
+    int h, w;
     double dx, dy, cos, m;
     
     h = yMax - yMin;
     w = xMax - xMin;
-    p = zMax - zMin;
     
-    cos = (sqrt(2))/2;
+    if(typeP == 1) cos = (sqrt(2))/2; //Cavaleira
+    else cos = (cos(30*3.141592/180))/2; //Cabinet
+    
     if((WIDTH/w) <= (HEIGHT/h)) m = (WIDTH/w);
     else m = (HEIGHT/h);
     
@@ -278,57 +294,11 @@ class Polygon {
     if (type == 1) {
       pointsScreen = new double[8][4];
       size = 8;
-    }
-    else {
+    } else {
       pointsScreen = new double[5][4];
       size = 5;
     }
-    for(int i = 0; i < size; i++){
-      //x', y', z'
-      pointsScreen[i][0] = points[i][0] - xMin;
-      pointsScreen[i][1] = yMax - points[i][1];
-      pointsScreen[i][2] = zMax - points[i][2];
-      
-      //x'', y'', z''
-      pointsScreen[i][0] = pointsScreen[i][0] * m + dx;
-      pointsScreen[i][1] = pointsScreen[i][1] * m + dy;
-      pointsScreen[i][2] = pointsScreen[i][2] * m;
-      
-      //x''', y''', z'''
-      pointsScreen[i][0] = pointsScreen[i][0] + pointsScreen[i][2] * cos;
-      pointsScreen[i][1] = pointsScreen[i][1] - pointsScreen[i][2] * cos;
-      pointsScreen[i][2] = 0;
-    }
     
-    this.pointsScreen = pointsScreen;
-    drawObject();
-  }
-  
-  private void cabinetProjection(){
-    double[][] pointsScreen;
-    int h, w, p;
-    double dx, dy, cos, m;
-    
-    h = yMax - yMin;
-    w = xMax - xMin;
-    p = zMax - zMin;
-    
-    cos = (sqrt(2)/2)/2;
-    if((WIDTH/w) <= (HEIGHT/h)) m = (WIDTH/w);
-    else m = (HEIGHT/h);
-    
-    dx = (WIDTH - w * m) / 2;
-    dy = (HEIGHT - h * m) / 2;
-    
-    int size = 0;
-    if (type == 1) {
-      pointsScreen = new double[8][4];
-      size = 8;
-    }
-    else {
-      pointsScreen = new double[5][4];
-      size = 5;
-    }
     for(int i = 0; i < size; i++){
       //x', y', z'
       pointsScreen[i][0] = points[i][0] - xMin;
@@ -352,14 +322,12 @@ class Polygon {
   
   private void isometricProjection(){
     double[][] pointsScreen;
-    int h, w, p;
-    double dx, dy, cos, m;
+    int h, w;
+    double dx, dy, m;
     
     h = yMax - yMin;
     w = xMax - xMin;
-    p = zMax - zMin;
     
-    cos = (sqrt(2)/2);
     if((WIDTH/w) <= (HEIGHT/h)) m = (WIDTH/w);
     else m = (HEIGHT/h);
     
@@ -375,21 +343,17 @@ class Polygon {
       pointsScreen = new double[5][4];
       size = 5;
     }
+    
     for(int i = 0; i < size; i++){
       //x', y', z'
       pointsScreen[i][0] = points[i][0] - xMin;
       pointsScreen[i][1] = yMax - points[i][1];
-      pointsScreen[i][2] = 10 - points[i][2];
+      pointsScreen[i][2] = 5 - points[i][2];
       
       //x'', y'', z''
       pointsScreen[i][0] = pointsScreen[i][0] * m + dx;
       pointsScreen[i][1] = pointsScreen[i][1] * m + dy;
       pointsScreen[i][2] = pointsScreen[i][2] * m;
-      
-      //x''', y''', z'''
-      pointsScreen[i][0] = pointsScreen[i][0] + pointsScreen[i][2] * cos;
-      pointsScreen[i][1] = pointsScreen[i][1] - pointsScreen[i][2] * cos;
-      pointsScreen[i][2] = 0;
     }
     
     double[][] isometric = {
@@ -404,33 +368,71 @@ class Polygon {
     drawObject();
   }
   
-  private void vanishingPointZProjection(){
+  private void perspectiveProjection(int typeP){
+    //double[][] pointsScreen;
+    //int h, w, p;
+    //double dx, dy, m, fz = 5;
     
-  }
-  
-  private void vanishingPointXZProjection(){
+    //h = yMax - yMin;
+    //w = xMax - xMin;
+    //p = zMax - zMin;
     
+    //if((WIDTH/w) <= (HEIGHT/h)) m = (WIDTH/w);
+    //else m = (HEIGHT/h);
+    
+    //dx = (WIDTH - w * m) / 2;
+    //dy = (HEIGHT - h * m) / 2;
+    
+    //int size = 0;
+    //if (type == 1) {
+    //  pointsScreen = new double[8][4];
+    //  size = 8;
+    //}
+    //else {
+    //  pointsScreen = new double[5][4];
+    //  size = 5;
+    //}
+    
+    //for(int i = 0; i < size; i++){
+    //  //x', y', z'
+    //  pointsScreen[i][0] = points[i][0] - xMin;
+    //  pointsScreen[i][1] = yMax - points[i][1];
+    //  pointsScreen[i][2] = zMax - points[i][2];
+      
+    //  //x'', y'', z''
+    //  pointsScreen[i][0] = pointsScreen[i][0] * m + dx;
+    //  pointsScreen[i][1] = pointsScreen[i][1] * m + dy;
+    //  pointsScreen[i][2] = pointsScreen[i][2] * m;
+      
+    //  //x''', y''', z'''
+    //  pointsScreen[i][0] = (fz/(pointsScreen[i][2])) * pointsScreen[i][0];
+    //  pointsScreen[i][1] = (fz/(pointsScreen[i][2])) * pointsScreen[i][1];
+    //  pointsScreen[i][2] = 0;
+    //}
+    
+    //this.pointsScreen = pointsScreen;
+    //drawObject();
   }
   
   void chooseProjection(){
     switch (projection){
       case 1:
-        cavaleiraProjection();
+        obliqueProjection(1);
         break;
       case 2:
-        cabinetProjection();
+        obliqueProjection(2);
         break;
       case 3:
         isometricProjection();
         break;
       case 4:
-        vanishingPointZProjection();
+        perspectiveProjection(1);
         break;
       case 5:
-        vanishingPointXZProjection();
+        perspectiveProjection(2);
         break;
       default:
-        cavaleiraProjection();
+        obliqueProjection(1);
         break;
     }
   }
