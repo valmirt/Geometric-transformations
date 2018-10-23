@@ -201,19 +201,34 @@ class Polygon {
       y *= variation;
       z *= variation;
     }
+    int size = 0;
+    if(type == 1) size = 8;
+    else size = 5;
     
     double[][] m = {
+      {1,     0,   0, 0},
+      {0,     1,   0, 0},
+      {0,     0,   1, 0},
+      {-xd, -yd, -zd, 1},
+    };
+    points = multM(points, m, size);
+    
+    double[][] m1 = {
       {x, 0, 0, 0},
       {0, y, 0, 0},
       {0, 0, z, 0},
       {0, 0, 0, 1},
     };
-    int size = 0;
+    points = multM(points, m1, size);
     
-    if(type == 1) size = 8;
-    else size = 5;
+    double[][] m2 = {
+      {1,   0,  0, 0},
+      {0,   1,  0, 0},
+      {0,   0,  1, 0},
+      {xd, yd, zd, 1},
+    };
+    points = multM(points, m2, size);
     
-    points = multM(points, m, size);
     chooseProjection();
   }
   
@@ -371,7 +386,7 @@ class Polygon {
   private void perspectiveProjection(int typeP){
     double[][] pointsScreen;
     int h, w;
-    double dx, dy, m, fz = 100, fx = 5;
+    double dx, dy, m, fz = 1000, fx = 5;
     
     h = yMax - yMin;
     w = xMax - xMin;
