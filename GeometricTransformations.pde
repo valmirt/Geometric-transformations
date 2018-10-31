@@ -88,7 +88,7 @@ void keyPressed(){
       if(control) {
         if(polygon.projection < 5) polygon.projection += 1;
         else polygon.projection = 1;
-        polygon.chooseProjection();
+        polygon.selectProjection();
       }
       showMenu();
     }

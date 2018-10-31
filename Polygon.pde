@@ -114,7 +114,7 @@ class Polygon {
     this.colorBorder = colorBorder;
     this.colorInside = colorInside;
     this.fill = false;
-    chooseProjection();
+    selectProjection();
   }
   
   private void createPyramid() {
@@ -166,7 +166,7 @@ class Polygon {
     this.colorInside = colorInside;
     this.fill = false;
     
-    chooseProjection();
+    selectProjection();
   } //<>//
   
   void move(double x, double y, double z, boolean var){
@@ -192,7 +192,7 @@ class Polygon {
     else size = 5;
     
     points = multM(points, m, size);
-    chooseProjection();
+    selectProjection();
   }
   
   void customScale(double x, double y, double z, boolean var){
@@ -229,7 +229,7 @@ class Polygon {
     };
     points = multM(points, m2, size);
     
-    chooseProjection();
+    selectProjection();
   }
   
   void rotation(double angle, int typeR){
@@ -285,7 +285,7 @@ class Polygon {
     };
     points = multM(points, m2, size);
     
-    chooseProjection();
+    selectProjection();
   }
   
   private void obliqueProjection(int typeP){
@@ -386,7 +386,7 @@ class Polygon {
   private void perspectiveProjection(int typeP){
     double[][] pointsScreen;
     int h, w;
-    double dx, dy, m, fz = 1000, fx = 5;
+    double dx, dy, m, fz = 10, fx = 5;
     
     h = yMax - yMin;
     w = xMax - xMin;
@@ -411,20 +411,20 @@ class Polygon {
       //x', y', z'
       pointsScreen[i][0] = points[i][0] - xMin;
       pointsScreen[i][1] = yMax - points[i][1];
-      pointsScreen[i][2] = zMax - points[i][2];
+      pointsScreen[i][2] = -1 - points[i][2];
       
       //x'', y'', z''
       pointsScreen[i][0] = pointsScreen[i][0] * m + dx;
       pointsScreen[i][1] = pointsScreen[i][1] * m + dy;
       pointsScreen[i][2] = pointsScreen[i][2] * m;
       
-      //x''' y''' z'''
-      if(typeP == 1){
-        pointsScreen[i][0] /= (1-(pointsScreen[i][2]/fz));
-        pointsScreen[i][1] /= (1-(pointsScreen[i][2]/fz));
+      //x''', y''', z'''
+      if(typeP == 1){ //Ponto de fuga Z
+        pointsScreen[i][0] /= 1 - pointsScreen[i][2] / fz;
+        pointsScreen[i][1] /= 1 - pointsScreen[i][2] / fz;
         pointsScreen[i][2] = 0;
       } else {
-        //Ponto de fuga X e Z
+        //Ponto de fuga X Z
       }
     }
     
@@ -432,7 +432,7 @@ class Polygon {
     drawObject();
   }
   
-  void chooseProjection(){
+  void selectProjection(){
     switch (projection){
       case 1:
         obliqueProjection(1);
