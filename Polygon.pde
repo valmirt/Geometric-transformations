@@ -2,8 +2,8 @@
   * Computação Gráfica 
   *
   * Valmir Torres de Jesus Junior
-  * Atividade individual 5
-  * 19/10/2018
+  * Atividade individual 6
+  * 26/11/2018
 **/
 
 class Polygon {

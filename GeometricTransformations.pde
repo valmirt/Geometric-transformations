@@ -2,8 +2,8 @@
   * Computação Gráfica 
   *
   * Valmir Torres de Jesus Junior
-  * Atividade individual 5
-  * 19/10/2018
+  * Atividade individual 56
+  * 26/11/2018
 **/
 
 int SCREEN_WIDTH = 800;
@@ -15,12 +15,14 @@ int HEIGHT = SCREEN_HEIGHT - MENU_SIZE_HEIGHT;
 int xMin = -10, xMax = 10, yMin = -10, yMax = 10, zMin = -1, zMax = 1;
 boolean control = false;
 
+//ArrayList<Polygon> polygons = new ArrayList();
 Polygon polygon;
-
 void setup() {
   //Remember to change here when change SCREEN_WIDTH and SCREEN_HEIGHT
   size(800, 600);
   background(0);
+  
+  readFigure();
   showMenu();
 }
 
@@ -98,6 +100,89 @@ void keyPressed(){
     if (key == '-'){
       if(control) if (polygon.variation > 0.6) polygon.variation -= 0.5;
     }
+}
+
+
+void readFigure(){
+  String[] figure = loadStrings("figure.dat");
+  int aux = 0;
+  //2a linha: universo
+  aux = 1;
+  String currentLine = figure[aux];
+  int[] univ = int(split(currentLine, ' '));
+  this.xMin = univ[0];
+  this.xMax = univ[1];
+  this.yMin = univ[2];
+  this.yMax = univ[3];
+  
+  //3a linha: quant. obj
+  aux = 2;
+  currentLine = figure[aux];
+  int objNum = int(currentLine.charAt(0));
+  aux = 4;
+  for(int k = 0; k < objNum; k++){
+   //5a linha: P L F
+    currentLine = figure[aux];
+    int[] plf = int(split(currentLine, ' '));
+    int p = plf[0];
+    int l = plf[1];
+    int f = plf[2];
+    
+    aux++;
+    double[][] points = new double[p][4];
+    for(int i = 0; i < p; i++) {
+      currentLine = figure[i+aux];
+      int[] temp = int(split(currentLine, ' '));
+      points[i][0] = temp[0];
+      points[i][1] = temp[1];
+      points[i][2] = temp[2];
+      points[i][3] = 1;
+    }
+    aux += p;
+    double[][] lines = new double[l][2];
+    for(int i = 0; i < l; i++) {
+      currentLine = figure[i+aux];
+      int[] temp = int(split(currentLine, ' '));
+      lines[i][0] = temp[0];
+      lines[i][1] = temp[1];
+    }
+    
+    aux += l;
+    double[][] faces;
+    for(int i = 0; i < f; i++) {
+      currentLine = figure[i+aux];
+      int[] temp = int(split(currentLine, ' '));
+      faces = new double[f][temp[0]+3];
+      for(int j = 0; j < temp[0]; j++){
+        faces[i][j] = temp[j+1];
+      }
+      faces[i][temp[0]] = temp[temp[0]+1]; //<>//
+      faces[i][temp[0]+1] = temp[temp[0]+2];
+      faces[i][temp[0]+2] = temp[temp[0]+3];
+    }
+    aux += f;
+    currentLine = figure[aux]; //<>//
+    int[] rot = int(split(currentLine, ' '));
+    double rotationX = rot[0];
+    double rotationY = rot[1];
+    double rotationZ = rot[2];
+    
+    aux++;
+    currentLine = figure[aux];
+    int[] scl = int(split(currentLine, ' '));
+    double scaleX = scl[0];
+    double scaleY = scl[1];
+    double scaleZ = scl[2];
+    
+    aux++;
+    currentLine = figure[aux];
+    int[] trans = int(split(currentLine, ' '));
+    double translationX = trans[0];
+    double translationY = trans[1];
+    double translationZ = trans[2]; //<>//
+    aux += 2; //<>//
+    //Polygon
+  }
 }
 
 void showMenu(){
