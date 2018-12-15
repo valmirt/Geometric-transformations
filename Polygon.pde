@@ -3,13 +3,14 @@
   *
   * Valmir Torres de Jesus Junior
   * Atividade individual 6
-  * 26/11/2018
+  * 15/12/2018
 **/
 
 class Polygon {
   private double[][] points;
   private double[][] pointsScreen;
   private double[][] lines;
+  private ArrayList<double[]> faces;
   private int[] colorBorder;
   private int[] colorInside;
   private boolean fill;
@@ -22,6 +23,30 @@ class Polygon {
     this.type = object;
     if (object == 1) createCube();
     else if (object == 2) createPyramid(); 
+  }
+  
+  Polygon(double[][] points, 
+          double[][] lines, 
+          ArrayList<double[]> faces, 
+          double[] rot, 
+          double[] scl,
+          double[] mv) {
+    this.points = points;
+    this.lines = lines;
+    this.faces = faces;
+    
+    int[] colorBorder = {
+      randomGen(1, 256), 
+      randomGen(1, 256), 
+      randomGen(1,256)
+    };
+    this.colorBorder = colorBorder;
+   
+    rotation(rot[0], 1);
+    rotation(rot[1], 2);
+    rotation(rot[2], 3);
+    customScale(scl[0], scl[1], scl[2], true);
+    move(mv[0], mv[1], mv[2], true);
   }
   
   double[][] getPoints(){
@@ -582,7 +607,7 @@ class Polygon {
         temp[i][j] = result;
       }
   }
-    return temp; //<>//
+    return temp;
   }
   
   private int randomGen(int first, int last) {

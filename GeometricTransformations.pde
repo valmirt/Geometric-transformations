@@ -3,7 +3,7 @@
   *
   * Valmir Torres de Jesus Junior
   * Atividade individual 56
-  * 26/11/2018
+  * 15/12/2018
 **/
 
 int SCREEN_WIDTH = 800;
@@ -15,7 +15,7 @@ int HEIGHT = SCREEN_HEIGHT - MENU_SIZE_HEIGHT;
 int xMin = -10, xMax = 10, yMin = -10, yMax = 10, zMin = -1, zMax = 1;
 boolean control = false;
 
-//ArrayList<Polygon> polygons = new ArrayList();
+ArrayList<Polygon> polygons;
 Polygon polygon;
 void setup() {
   //Remember to change here when change SCREEN_WIDTH and SCREEN_HEIGHT
@@ -119,6 +119,9 @@ void readFigure(){
   aux = 2;
   currentLine = figure[aux];
   int objNum = int(currentLine.charAt(0));
+  
+  polygons = new ArrayList(objNum);
+  
   aux = 4;
   for(int k = 0; k < objNum; k++){
    //5a linha: P L F
@@ -148,40 +151,46 @@ void readFigure(){
     }
     
     aux += l;
-    double[][] faces;
+    ArrayList<double[]> faces = new ArrayList(f);
     for(int i = 0; i < f; i++) {
       currentLine = figure[i+aux];
       int[] temp = int(split(currentLine, ' '));
-      faces = new double[f][temp[0]+3];
+      double[] face = new double[temp[0]+3];
       for(int j = 0; j < temp[0]; j++){
-        faces[i][j] = temp[j+1];
+        face[j] = temp[j+1];
       }
-      faces[i][temp[0]] = temp[temp[0]+1]; //<>//
-      faces[i][temp[0]+1] = temp[temp[0]+2];
-      faces[i][temp[0]+2] = temp[temp[0]+3];
+      face[temp[0]] = temp[temp[0]+1];
+      face[temp[0]+1] = temp[temp[0]+2];
+      face[temp[0]+2] = temp[temp[0]+3];
+      faces.add(face);
     }
     aux += f;
-    currentLine = figure[aux]; //<>//
+    currentLine = figure[aux];
     int[] rot = int(split(currentLine, ' '));
-    double rotationX = rot[0];
-    double rotationY = rot[1];
-    double rotationZ = rot[2];
+    double[] rotationXYZ = new double[3];
+    rotationXYZ[0] = rot[0];
+    rotationXYZ[1] = rot[1];
+    rotationXYZ[2] = rot[2];
     
     aux++;
     currentLine = figure[aux];
     int[] scl = int(split(currentLine, ' '));
-    double scaleX = scl[0];
-    double scaleY = scl[1];
-    double scaleZ = scl[2];
+    double[] scaleXYZ = new double[3];
+    scaleXYZ[0] = scl[0];
+    scaleXYZ[1] = scl[1];
+    scaleXYZ[2] = scl[2];
     
     aux++;
     currentLine = figure[aux];
     int[] trans = int(split(currentLine, ' '));
-    double translationX = trans[0];
-    double translationY = trans[1];
-    double translationZ = trans[2]; //<>//
-    aux += 2; //<>//
-    //Polygon
+    double[] moveXYZ = new double[3];
+    moveXYZ[0] = trans[0];
+    moveXYZ[1] = trans[1];
+    moveXYZ[2] = trans[2];
+    
+    aux += 2;
+    Polygon polygon = new Polygon (points, lines, faces, rotationXYZ, scaleXYZ, moveXYZ); //<>//
+    polygons.add(polygon); //<>//
   }
 }
 
