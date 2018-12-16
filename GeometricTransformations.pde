@@ -2,7 +2,7 @@
   * Computação Gráfica 
   *
   * Valmir Torres de Jesus Junior
-  * Atividade individual 56
+  * Atividade individual 6
   * 15/12/2018
 **/
 
