@@ -2,7 +2,7 @@
   * Computação Gráfica 
   *
   * Valmir Torres de Jesus Junior
-  * Atividade individual 6
+  * Atividade individual 7
   * 17/12/2018
 **/
 
@@ -124,7 +124,7 @@ void keyPressed(){
         if(polygons.get(i).projection < 5) polygons.get(i).projection += 1;
         else polygons.get(i).projection = 1;
         polygons.get(i).selectProjection();
-        polygons.get(i).drawObject(); //<>//
+        polygons.get(i).drawObject();
         showMenu();  
       }
     }
@@ -133,6 +133,9 @@ void keyPressed(){
     }
     if (key == '-'){
       if(control) if (polygons.get(i).variation > 0.6) polygons.get(i).variation -= 0.5;
+    }
+    if (key == 't'){
+      polygons.get(i).paintFace();
     }
 }
 
@@ -190,13 +193,13 @@ void readFigure(){
     for(int i = 0; i < f; i++) {
       currentLine = figure[i+aux];
       int[] temp = int(split(currentLine, ' '));
-      double[] face = new double[temp[0]+3];
-      for(int j = 0; j < temp[0]; j++){
-        face[j] = temp[j+1];
+      double[] face = new double[temp[0]+4];
+      for(int j = 0; j <= temp[0]; j++){
+        face[j] = temp[j];
       }
-      face[temp[0]] = temp[temp[0]+1];
-      face[temp[0]+1] = temp[temp[0]+2];
-      face[temp[0]+2] = temp[temp[0]+3];
+      face[temp[0]+1] = temp[temp[0]+1];
+      face[temp[0]+2] = temp[temp[0]+2];
+      face[temp[0]+3] = temp[temp[0]+3];
       faces.add(face);
     }
     aux += f;
