@@ -36,7 +36,7 @@ void keyPressed(){
     }
     if(keyCode == TAB){
       control = false;
-      background(0);
+      background(0); //<>//
       if(i < maxObjs-1) i++;
       else i = 0;
       polygons.get(i).drawObject();
@@ -44,7 +44,7 @@ void keyPressed(){
     }
      if(keyCode == SHIFT){
       control = false;
-      background(0); //<>//
+      background(0);
       if(i > 0) i--;
       else i = maxObjs-1;
       polygons.get(i).drawObject();
@@ -133,9 +133,6 @@ void keyPressed(){
     }
     if (key == '-'){
       if(control) if (polygons.get(i).variation > 0.6) polygons.get(i).variation -= 0.5;
-    }
-    if (key == 't'){
-      polygons.get(i).paintFace();
     }
 }
 
