@@ -3,20 +3,21 @@
   *
   * Valmir Torres de Jesus Junior
   * Atividade individual 6
-  * 15/12/2018
+  * 17/12/2018
 **/
 
 int SCREEN_WIDTH = 800;
 int SCREEN_HEIGHT = 600;
-int MENU_SIZE_WIDTH = 200;
+int MENU_SIZE_WIDTH = 250;
 int MENU_SIZE_HEIGHT = 0;
 int WIDTH = SCREEN_WIDTH - MENU_SIZE_WIDTH;
 int HEIGHT = SCREEN_HEIGHT - MENU_SIZE_HEIGHT;
 int xMin = -10, xMax = 10, yMin = -10, yMax = 10, zMin = -1, zMax = 1;
 boolean control = false;
+int i = -1;
+int maxObjs;
 
 ArrayList<Polygon> polygons;
-Polygon polygon;
 void setup() {
   //Remember to change here when change SCREEN_WIDTH and SCREEN_HEIGHT
   size(800, 600);
@@ -33,72 +34,105 @@ void keyPressed(){
     if (keyCode == 27){
         exit();
     }
-    if (key == '1'){
+    if(keyCode == TAB){
+      control = false;
       background(0);
-      polygon = new Polygon(1);
-      control = true;
+      if(i < maxObjs-1) i++;
+      else i = 0;
+      polygons.get(i).drawObject();
       showMenu();
     }
-    if(key == '2'){
-      background(0);
-      polygon = new Polygon(2);
-      control = true;
+     if(keyCode == SHIFT){
+      control = false;
+      background(0); //<>//
+      if(i > 0) i--;
+      else i = maxObjs-1;
+      polygons.get(i).drawObject();
       showMenu();
     }
+     if(keyCode == ENTER){
+       control = true;
+    }
+    
     if (keyCode == UP){
-      background(0);
-      if(control) polygon.move(0, 1, 0, true);
-      showMenu();
+      if(control) {
+        background(0);
+        polygons.get(i).move(0, 1, 0, true);
+        polygons.get(i).drawObject();
+        showMenu();  
+      }
     }
     if (keyCode == DOWN){
-      background(0);
-      if(control) polygon.move(0, -1, 0, true);
-      showMenu();
+      if(control) {
+        background(0);
+        polygons.get(i).move(0, -1, 0, true);
+        polygons.get(i).drawObject();
+        showMenu();
+      }
     }
     if (keyCode == LEFT){
-      background(0);
-      if(control) polygon.move(-1, 0, 0, true);
-      showMenu();
+      if(control) {
+        background(0);
+        polygons.get(i).move(-1, 0, 0, true);
+        polygons.get(i).drawObject();
+        showMenu();
+      }
     }
     if (keyCode == RIGHT){
-      background(0);
-      if(control) polygon.move(1, 0, 0, true);
-      showMenu();
+      if(control) {
+        background(0);
+        polygons.get(i).move(1, 0, 0, true);
+        polygons.get(i).drawObject();
+        showMenu();  
+      }
     }
     if (key == 'X' || key == 'x'){
-      background(0);
-      if(control) polygon.rotation(15, 1);
-      showMenu();
+      if(control) {
+        background(0);
+        polygons.get(i).rotation(15, 1);
+        polygons.get(i).drawObject();
+        showMenu();
+      }
     }
     if (key == 'Z' || key == 'z'){
-      background(0);
-      if(control) polygon.rotation(15, 2);
-      showMenu();
+      if(control) {
+        background(0);
+        polygons.get(i).rotation(15, 2);
+        polygons.get(i).drawObject();
+        showMenu();  
+      }
     }
     if (key == 'Y' || key == 'y'){
-      background(0);
-      if(control) polygon.rotation(15, 3);
-      showMenu();
+      if(control) {
+        background(0);
+        polygons.get(i).rotation(15, 3);
+        polygons.get(i).drawObject();
+        showMenu();
+      }
     }
     if (key == 'S' || key == 's'){
-      background(0);
-      if(control) polygon.customScale(0.9, 0.9, 0.9, true);
-      showMenu();
+      if(control) {
+        background(0);
+        polygons.get(i).customScale(0.9, 0.9, 0.9, true);
+        polygons.get(i).drawObject();
+        showMenu();
+      }
     }
     if (key == 'P' || key == 'p'){
-      background(0);
       if(control) {
-        if(polygon.projection < 5) polygon.projection += 1;
-        else polygon.projection = 1;
-        polygon.selectProjection();
+        background(0);
+        if(polygons.get(i).projection < 5) polygons.get(i).projection += 1;
+        else polygons.get(i).projection = 1;
+        polygons.get(i).selectProjection();
+        polygons.get(i).drawObject(); //<>//
+        showMenu();  
       }
-      showMenu();
     }
     if (key == '+'){
-      if(control) if (polygon.variation < 3) polygon.variation += 0.5;
+      if(control) if (polygons.get(i).variation < 3) polygons.get(i).variation += 0.5;
     }
     if (key == '-'){
-      if(control) if (polygon.variation > 0.6) polygon.variation -= 0.5;
+      if(control) if (polygons.get(i).variation > 0.6) polygons.get(i).variation -= 0.5;
     }
 }
 
@@ -118,12 +152,13 @@ void readFigure(){
   //3a linha: quant. obj
   aux = 2;
   currentLine = figure[aux];
-  int objNum = int(currentLine.charAt(0));
+  int[] objNum = int(split(currentLine, ' '));
+  this.maxObjs = objNum[0];
   
-  polygons = new ArrayList(objNum);
+  polygons = new ArrayList(objNum[0]);
   
   aux = 4;
-  for(int k = 0; k < objNum; k++){
+  for(int k = 0; k < objNum[0]; k++){
    //5a linha: P L F
     currentLine = figure[aux];
     int[] plf = int(split(currentLine, ' '));
@@ -142,7 +177,7 @@ void readFigure(){
       points[i][3] = 1;
     }
     aux += p;
-    double[][] lines = new double[l][2];
+    int[][] lines = new int[l][2];
     for(int i = 0; i < l; i++) {
       currentLine = figure[i+aux];
       int[] temp = int(split(currentLine, ' '));
@@ -189,16 +224,16 @@ void readFigure(){
     moveXYZ[2] = trans[2];
     
     aux += 2;
-    Polygon polygon = new Polygon (points, lines, faces, rotationXYZ, scaleXYZ, moveXYZ); //<>//
-    polygons.add(polygon); //<>//
+    Polygon polygon = new Polygon (points, lines, faces, rotationXYZ, scaleXYZ, moveXYZ);
+    polygons.add(polygon);
   }
 }
 
 void showMenu(){
   textSize(16);
   text("Menu:", WIDTH, 30);
-  text("1. Cube", WIDTH, 60);
-  text("2. Pyramid", WIDTH, 90);
+  text("TAB/SHIFT. Select polygon", WIDTH, 60);
+  text("ENTER. Confirm polygon", WIDTH, 90);
   text("Controls:", WIDTH, 150);
   text("Arrows. Move", WIDTH, 180);
   text("X. Rotation XY", WIDTH, 210);
@@ -209,7 +244,7 @@ void showMenu(){
   text("+. Increase (+1x)", WIDTH, 390);
   text("-. Decrease (-1x)", WIDTH, 410);
   if(control){
-    switch(polygon.projection){
+    switch(polygons.get(i).projection){
       case 1:
         text("Cavaleira Projection", WIDTH, 500);
         break;

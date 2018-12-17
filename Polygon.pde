@@ -3,30 +3,22 @@
   *
   * Valmir Torres de Jesus Junior
   * Atividade individual 6
-  * 15/12/2018
+  * 17/12/2018
 **/
 
 class Polygon {
   private double[][] points;
   private double[][] pointsScreen;
-  private double[][] lines;
+  private int[][] lines;
   private ArrayList<double[]> faces;
   private int[] colorBorder;
-  private int[] colorInside;
-  private boolean fill;
-  private int type;
   private double xd = 0, yd = 0, zd = 0; 
+  private int zMed;
   int projection = 1;
   double variation = 1;
   
-  Polygon(int object){
-    this.type = object;
-    if (object == 1) createCube();
-    else if (object == 2) createPyramid(); 
-  }
-  
   Polygon(double[][] points, 
-          double[][] lines, 
+          int[][] lines, 
           ArrayList<double[]> faces, 
           double[] rot, 
           double[] scl,
@@ -49,151 +41,6 @@ class Polygon {
     move(mv[0], mv[1], mv[2], true);
   }
   
-  double[][] getPoints(){
-    return this.points;
-  }
-  
-  double[][] getPointsScreen(){
-    return this.pointsScreen;
-  }
-  
-  double[][] getLines(){
-    return this.lines;
-  }
-  
-  int[] getColorBorder(){
-    return this.colorBorder;
-  }
-  
-  int[] getColorInside(){
-    return this.colorInside;
-  }
-  
-  boolean isFill(){
-    return this.fill;
-  }
-  
-  private void createCube(){
-    double[][] points = new double[8][4];
-    
-    //p1
-    points[0][0] = -1;
-    points[0][1] = 1;
-    points[0][2] = 1;
-    points[0][3] = 1;
-    
-    //p2
-    points[1][0] = 1;
-    points[1][1] = 1;
-    points[1][2] = 1;
-    points[1][3] = 1;
-    
-    //p3
-    points[2][0] = 1;
-    points[2][1] = -1;
-    points[2][2] = 1;
-    points[2][3] = 1;
-    
-    //p4
-    points[3][0] = -1;
-    points[3][1] = -1;
-    points[3][2] = 1;
-    points[3][3] = 1;
-    
-    //p5
-    points[4][0] = -1;
-    points[4][1] = 1;
-    points[4][2] = -1;
-    points[4][3] = 1;
-    
-    //p6
-    points[5][0] = 1;
-    points[5][1] = 1;
-    points[5][2] = -1;
-    points[5][3] = 1;
-    
-    //p6
-    points[6][0] = 1;
-    points[6][1] = -1;
-    points[6][2] = -1;
-    points[6][3] = 1;
-    
-    //p7
-    points[7][0] = -1;
-    points[7][1] = -1;
-    points[7][2] = -1;
-    points[7][3] = 1;
-    
-    int[] colorBorder = {
-      randomGen(1, 256), 
-      randomGen(1, 256), 
-      randomGen(1,256)
-    };
-    int[] colorInside = {
-      randomGen(1, 256), 
-      randomGen(1, 256), 
-      randomGen(1,256)
-    };
-    
-    this.points = points;
-    this.colorBorder = colorBorder;
-    this.colorInside = colorInside;
-    this.fill = false;
-    selectProjection();
-  }
-  
-  private void createPyramid() {
-    double[][] points = new double[5][4];
-    
-    //p1
-    points[0][0] = 0;
-    points[0][1] = 3;
-    points[0][2] = 0;
-    points[0][3] = 1;
-    
-    //p2
-    points[1][0] = -0.5;
-    points[1][1] = 0.5;
-    points[1][2] = -0.5;
-    points[1][3] = 1;
-    
-    //p3
-    points[2][0] = 1;
-    points[2][1] = 0;
-    points[2][2] = -0.5;
-    points[2][3] = 1;
-    
-    //p4
-    points[3][0] = 0.5;
-    points[3][1] = -0.5;
-    points[3][2] = 0.5;
-    points[3][3] = 1;
-    
-    //p5
-    points[4][0] = -1;
-    points[4][1] = 0;
-    points[4][2] = 0.5;
-    points[4][3] = 1;
-    
-    int[] colorBorder = {
-      randomGen(1, 256), 
-      randomGen(1, 256), 
-      randomGen(1,256)
-    };
-    int[] colorInside = {
-      randomGen(1, 256), 
-      randomGen(1, 256), 
-      randomGen(1,256)
-    };
-    
-    this.points = points;
-    this.colorBorder = colorBorder;
-    this.colorInside = colorInside;
-    this.fill = false;
-    
-    selectProjection();
-  } //<>//
-  
   void move(double x, double y, double z, boolean var){
     if(var){
       x *= variation;
@@ -211,10 +58,7 @@ class Polygon {
       {0, 0, 1, 0},
       {x, y, z, 1},
     };
-    int size = 0;
-    
-    if(type == 1) size = 8;
-    else size = 5;
+    int size = this.points.length;
     
     points = multM(points, m, size);
     selectProjection();
@@ -226,9 +70,7 @@ class Polygon {
       y *= variation;
       z *= variation;
     }
-    int size = 0;
-    if(type == 1) size = 8;
-    else size = 5;
+    int size = this.points.length;
     
     double[][] m = {
       {1,     0,   0, 0},
@@ -260,9 +102,7 @@ class Polygon {
   void rotation(double angle, int typeR){
     float rad = (float) angle*3.141592/180;
     
-    int size = 0;
-    if(type == 1) size = 8;
-    else size = 5;
+    int size = this.points.length;
     
     double[][] m = {
       {1,     0,   0, 0},
@@ -330,14 +170,8 @@ class Polygon {
     dx = (WIDTH - w * m) / 2;
     dy = (HEIGHT - h * m) / 2;
     
-    int size = 0;
-    if (type == 1) {
-      pointsScreen = new double[8][4];
-      size = 8;
-    } else {
-      pointsScreen = new double[5][4];
-      size = 5;
-    }
+    int size = this.points.length;
+    pointsScreen = new double[size][4];
     
     for(int i = 0; i < size; i++){
       //x', y', z'
@@ -357,7 +191,6 @@ class Polygon {
     }
     
     this.pointsScreen = pointsScreen;
-    drawObject();
   }
   
   private void isometricProjection(){
@@ -374,15 +207,8 @@ class Polygon {
     dx = (WIDTH - w * m) / 2;
     dy = (HEIGHT - h * m) / 2;
     
-    int size = 0;
-    if (type == 1) {
-      pointsScreen = new double[8][4];
-      size = 8;
-    }
-    else {
-      pointsScreen = new double[5][4];
-      size = 5;
-    }
+    int size = this.points.length;
+    pointsScreen = new double[size][4];
     
     for(int i = 0; i < size; i++){
       //x', y', z'
@@ -405,13 +231,12 @@ class Polygon {
     
     pointsScreen = multM(pointsScreen, isometric , size);
     this.pointsScreen = pointsScreen;
-    drawObject();
   }
   
   private void perspectiveProjection(int typeP){
     double[][] pointsScreen;
     int h, w;
-    double dx, dy, m, fz = 10, fx = 5;
+    double dx, dy, m, fz = 1000, fx = 5;
     
     h = yMax - yMin;
     w = xMax - xMin;
@@ -422,15 +247,8 @@ class Polygon {
     dx = (WIDTH - w * m) / 2;
     dy = (HEIGHT - h * m) / 2;
     
-    int size = 0;
-    if (type == 1) {
-      pointsScreen = new double[8][4];
-      size = 8;
-    }
-    else {
-      pointsScreen = new double[5][4];
-      size = 5;
-    }
+    int size = this.points.length;
+    pointsScreen = new double[size][4];
     
     for(int i = 0; i < size; i++){
       //x', y', z'
@@ -454,7 +272,6 @@ class Polygon {
     }
     
     this.pointsScreen = pointsScreen;
-    drawObject();
   }
   
   void selectProjection(){
@@ -480,99 +297,15 @@ class Polygon {
     }
   }
   
-  private void drawObject(){
-    int size = 0;
-    if(type == 1) {
-      this.lines = new double[12][6];
-      size = 12;
-      int i = 0;
-      int j = 4;
-      int k = 8;
-      for(int s = 0; s < 4; s++){
-        //recuperando xi, yi e zi 
-        lines[i][0] = pointsScreen[s][0];
-        lines[i][1] = pointsScreen[s][1];
-        lines[i][2] = pointsScreen[s][2];
-        
-        lines[j][0] = pointsScreen[s][0];
-        lines[j][1] = pointsScreen[s][1];
-        lines[j][2] = pointsScreen[s][2];
-        
-        lines[k][0] = pointsScreen[s+4][0];
-        lines[k][1] = pointsScreen[s+4][1];
-        lines[k][2] = pointsScreen[s+4][2];
-        
-        //recuperando xf, yf e zf
-        if (s == 3){
-          lines[i][3] = pointsScreen[0][0];
-          lines[i][4] = pointsScreen[0][1];
-          lines[i][5] = pointsScreen[0][2];
-          
-          lines[j][3] = pointsScreen[s+4][0];
-          lines[j][4] = pointsScreen[s+4][1];
-          lines[j][5] = pointsScreen[s+4][2];
-          
-          lines[k][3] = pointsScreen[4][0];
-          lines[k][4] = pointsScreen[4][1];
-          lines[k][5] = pointsScreen[4][2];
-        } else {
-          lines[i][3] = pointsScreen[s+1][0];
-          lines[i][4] = pointsScreen[s+1][1];
-          lines[i][5] = pointsScreen[s+1][2];
-          
-          lines[j][3] = pointsScreen[s+4][0];
-          lines[j][4] = pointsScreen[s+4][1];
-          lines[j][5] = pointsScreen[s+4][2];
-          
-          lines[k][3] = pointsScreen[s+5][0];
-          lines[k][4] = pointsScreen[s+5][1];
-          lines[k][5] = pointsScreen[s+5][2];
-        }
-        i++;
-        j++;
-        k++;
-      }
-    } else {
-      size = 8;
-      this.lines = new double[8][6];
-      for(int s = 0; s < 4; s++){
-        //recuperando xi, yi e zi 
-        lines[s][0] = pointsScreen[s+1][0];
-        lines[s][1] = pointsScreen[s+1][1];
-        lines[s][2] = pointsScreen[s+1][2];
-        
-        //recuperando xf, yf e zf
-        if (s == 3){
-          lines[s][3] = pointsScreen[1][0];
-          lines[s][4] = pointsScreen[1][1];
-          lines[s][5] = pointsScreen[1][2];
-        } else {
-          lines[s][3] = pointsScreen[s+2][0];
-          lines[s][4] = pointsScreen[s+2][1];
-          lines[s][5] = pointsScreen[s+2][2];
-        }
-      }
-      
-      for (int i = 4; i < 8; i++) {
-        //recuperando xi, yi e zi 
-        lines[i][0] = pointsScreen[0][0];
-        lines[i][1] = pointsScreen[0][1];
-        lines[i][2] = pointsScreen[0][2];
-        
-        //recuperando xf, yf e zf
-        lines[i][3] = pointsScreen[i-3][0];
-        lines[i][4] = pointsScreen[i-3][1];
-        lines[i][5] = pointsScreen[i-3][2];
-      }
-    }
-    for (int i = 0; i < size; i++) {
-      linhaDDA((int)lines[i][0], 
-               (int)lines[i][1], 
-               (int)lines[i][3], 
-               (int)lines[i][4], 
-               colorBorder[0], 
-               colorBorder[1], 
-               colorBorder[2]);
+  void drawObject(){
+    for (int i = 0; i < this.lines.length; i++){
+      linhaDDA((int) this.pointsScreen[this.lines[i][0]-1][0],
+               (int) this.pointsScreen[this.lines[i][0]-1][1],
+               (int) this.pointsScreen[this.lines[i][1]-1][0],
+               (int) this.pointsScreen[this.lines[i][1]-1][1],
+               this.colorBorder[0],
+               this.colorBorder[1],
+               this.colorBorder[2]);
     }
   }
   
