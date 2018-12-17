@@ -2,7 +2,7 @@
   * Computação Gráfica 
   *
   * Valmir Torres de Jesus Junior
-  * Atividade individual 6
+  * Atividade individual 7
   * 17/12/2018
 **/
 
@@ -14,6 +14,7 @@ class Polygon {
   private int[] colorBorder;
   private double xd = 0, yd = 0, zd = 0; 
   private int zMed;
+  private TableP[] sides;
   int projection = 1;
   double variation = 1;
   
@@ -307,6 +308,7 @@ class Polygon {
                this.colorBorder[1],
                this.colorBorder[2]);
     }
+    paintFace(); //<>//
   }
   
   private void linhaDDA(int xi, int yi, int xf, int yf, int r, int g, int b) {
@@ -326,6 +328,110 @@ class Polygon {
       y += incY;
       
       point((int) x, (int) y);
+    }
+  }
+  
+  void paintFace(){
+    //Determinar qual face sera pintada primeiro
+    
+    //Observador: (Px, Py, Pz)
+    //Se n*l = 0, o observador esta perpendicular ao plano
+    //Se n*l > 0, o plano esta visivel
+    //Se n*l < 0, o plano esta invisivel
+    
+    //n*l = nx * (Px - P2x) + ny * (Py - P2y) + nz * (Pz - P2z)
+    //nx = (P3y - P2y)*(P1z - P2z)-(P1y-P2y)*(P3z-P2z)
+    //ny = (P3z - P2z)*(P1x - P2x)-(P1z-P2z)*(P3x-P2x)
+    //nz = (P3x - P2x)*(P1y - P2y)-(P1x-P2x)*(P3y-P2y)
+    //lx = (Px - P2x)
+    //ly = (Py - P2y)
+    //lz = (Pz - P2z)
+    
+    int temp = 0;
+    double[] face = faces.get(temp);
+    int n = (int)face[0];
+    int[][]facePoints = new int[n][4];
+    
+    //Recuperando os pontos da face
+    for(int i = 0; i < n; i++){
+      //recuperando xi e yi
+      facePoints[i][0] = (int) this.pointsScreen[(int) face[i+1]-1][0];
+      facePoints[i][1] = (int) this.pointsScreen[(int) face[i+1]-1][1];
+      //recuperando xf e yf
+      if (i == n-1){
+        facePoints[i][2] = (int) this.pointsScreen[(int) face[1]-1][0];
+        facePoints[i][3] = (int) this.pointsScreen[(int) face[1]-1][1];
+      } else {
+        facePoints[i][2] =  (int) this.pointsScreen[(int) face[i+2]-1][0];
+        facePoints[i][3] =  (int) this.pointsScreen[(int) face[i+2]-1][1];
+      }
+    }
+    
+    customFill(facePoints, (int) face[n+1], (int) face[n+2], (int) face[n+3]);
+  }
+  
+  private void customFill(int[][] facePoints, int r, int g, int b){ 
+    calculateTable(facePoints);
+    int p = facePoints.length;
+    FloatList aux = new FloatList();
+    
+    for(int yVarredura = 0; yVarredura < SCREEN_WIDTH; yVarredura++) {
+      for(int i = 0; i < p; i++) {
+        if((yVarredura <= sides[i].yMax) && (yVarredura >= sides[i].yMin)){
+          if(sides[i].yMin != sides[i].yMax){
+            float temp = sides[i].coef * (yVarredura - sides[i].yMin) + sides[i].xTy;
+            aux.append(temp);
+          }
+        }
+      }
+      
+      if(aux.size() > 0 && aux.size() % 2 != 0) {
+        aux.sort();
+        
+        for(int i = 0; i < aux.size(); i++) {
+          for(int j = i + 1; j < aux.size(); j++){
+            if(round(aux.get(i)) == round(aux.get(j))){
+              aux.remove(i);
+              break;
+            }
+          }
+        }
+      }
+      
+      if (aux.size() > 0 && aux.size() % 2 == 0){
+        aux.sort();
+        
+        for (int i = 0; i < aux.size(); i = i + 2)
+          linhaDDA((int) aux.get(i)+1, 
+                   yVarredura, 
+                   (int) aux.get(i+1)-1,
+                   yVarredura, 
+                   r, g, b);
+                  
+      }
+      aux.clear();
+    } 
+  }
+  
+  private void calculateTable(int[][] facePoints) {
+    int p = facePoints.length;
+    sides = new TableP[p];
+    int yMin, yMax, xTy;
+    float coef;
+    
+    for (int i = 0; i < p; i++){
+      if (facePoints[i][1] <= facePoints[i][3]) {
+        yMin = facePoints[i][1]; 
+        yMax = facePoints[i][3];
+        xTy = facePoints[i][0];
+      } else {
+        yMin = facePoints[i][3]; 
+        yMax = facePoints[i][1];
+        xTy = facePoints[i][2];
+      }
+      if ((float)facePoints[i][1] - facePoints[i][3] == 0) coef = 0;
+      else coef = ((float)(facePoints[i][0]-facePoints[i][2])/(float)(facePoints[i][1]-facePoints[i][3]));     
+      sides[i] = new TableP(i+1, yMin, yMax, xTy, coef);
     }
   }
   
